@@ -1,0 +1,37 @@
+# Build and Compiled files
+*.ko
+*.o
+*.mod
+*.mod.c
+*.mod.o
+*.a
+*.so
+*.out
+*.app
+
+# Source archives & large directories
+src/
+tmp/
+__pycache__/
+*.pyc
+
+# Local system configuration modifications
+.directory
+*.log
+*.tmp
+*.patched
+*.add
+
+# Virtual Machine disk files or installer ISOs
+*.qcow2
+*.img
+*.iso
+*.fd
+*.rom
+
+# Local development environments
+.venv/
+venv/
+ENV/
+.idea/
+.vscode/

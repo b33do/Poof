@@ -1,0 +1,2237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celestial Toolkit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0710;
+            --sidebar-bg: rgba(15, 10, 24, 0.85);
+            --card-bg: rgba(22, 14, 34, 0.6);
+            --card-border: rgba(147, 51, 234, 0.15);
+            --card-border-hover: rgba(147, 51, 234, 0.35);
+            --text-primary: #f3eef8;
+            --text-secondary: #9c8fb2;
+            --accent-purple: #9d33ea;
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --accent-gold: #f59e0b;
+            --font-sans: 'Outfit', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+            --blur: blur(12px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 5% 10%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+                              radial-gradient(circle at 95% 85%, rgba(6, 182, 212, 0.1) 0%, transparent 40%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* App Container */
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            backdrop-filter: var(--blur);
+            border-right: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.2rem;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .brand-section {
+            margin-bottom: 2rem;
+        }
+
+        .brand-logo {
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            background: linear-gradient(135deg, #e879f9, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-sub {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-top: 4px;
+            margin-left: 2px;
+        }
+
+        .badge-system {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            color: var(--accent-emerald);
+            font-weight: 700;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-emerald);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--accent-emerald);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            transition: all 0.25s ease;
+            font-size: 0.92rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .menu-item a:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .menu-item.active a {
+            color: var(--text-primary);
+            background: rgba(157, 51, 234, 0.12);
+            border-color: rgba(157, 51, 234, 0.25);
+            box-shadow: inset 0 0 8px rgba(157, 51, 234, 0.1);
+        }
+
+        .sidebar-footer {
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main Viewport Workspace */
+        .workspace {
+            flex-grow: 1;
+            padding: 2.2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1.2rem;
+        }
+
+        .page-title {
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-sub {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+        }
+
+        /* Glassmorphic Panel Cards */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 1.8rem;
+            backdrop-filter: var(--blur);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--card-border-hover);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.4rem;
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+
+        .card-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Grid Frameworks */
+        .grid-dashboard-main {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 1.8rem;
+        }
+
+        .grid-dashboard-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        /* Welcome Banner Card */
+        .welcome-card {
+            grid-column: span 3;
+            background: linear-gradient(135deg, rgba(88, 28, 135, 0.25) 0%, rgba(22, 78, 99, 0.15) 100%);
+            border-color: rgba(147, 51, 234, 0.2);
+            padding: 1.5rem 1.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-info {
+            z-index: 2;
+        }
+
+        .welcome-title {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .welcome-user {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .welcome-meta {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .welcome-clock {
+            text-align: right;
+            z-index: 2;
+        }
+
+        .clock-time {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .clock-date {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Progress Stats Cards */
+        .metric-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-name {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .metric-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+
+        .metric-bar-bg {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-purple), var(--accent-cyan));
+            border-radius: 999px;
+            width: 0%;
+            transition: width 0.8s ease;
+        }
+
+        /* Graphics GPU Green Card */
+        .gpu-card {
+            grid-column: span 3;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(4, 120, 87, 0.03) 100%);
+            border-color: rgba(16, 185, 129, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1.2rem 1.6rem;
+        }
+
+        .gpu-icon {
+            font-size: 2.2rem;
+            color: var(--accent-emerald);
+        }
+
+        .gpu-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .gpu-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--accent-emerald);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .gpu-name {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        /* Status Indicators (Badges) */
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.025);
+            padding: 0.8rem 1.1rem;
+            border-radius: 12px;
+            transition: all 0.25s ease;
+            margin-bottom: 0.6rem;
+        }
+
+        .status-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .status-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .status-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid transparent;
+        }
+
+        .badge-active {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--accent-emerald);
+            border-color: rgba(16, 185, 129, 0.2);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.08);
+        }
+
+        .badge-inactive {
+            background-color: rgba(244, 63, 94, 0.1);
+            color: var(--accent-rose);
+            border-color: rgba(244, 63, 94, 0.2);
+        }
+
+        /* Tab Layout inside Views */
+        .tab-bar {
+            display: flex;
+            gap: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 1.8rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 0.8rem 0;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent-cyan);
+            box-shadow: 0 0 8px var(--accent-cyan);
+        }
+
+        /* Layout Panels */
+        .panel {
+            display: none;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .panel.active {
+            display: flex;
+        }
+
+        /* Form Controls & Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        td {
+            font-size: 0.88rem;
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Standard Buttons */
+        .btn {
+            font-family: var(--font-sans);
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.75rem 1.2rem;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, var(--accent-purple), #c084fc);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(157, 51, 234, 0.25);
+        }
+
+        .btn-purple:hover {
+            box-shadow: 0 4px 22px rgba(157, 51, 234, 0.45);
+            transform: translateY(-1.5px);
+        }
+
+        .btn-cyan {
+            background: linear-gradient(135deg, #0891b2, var(--accent-cyan));
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .btn-cyan:hover {
+            box-shadow: 0 4px 22px rgba(6, 182, 212, 0.4);
+            transform: translateY(-1.5px);
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #059669, var(--accent-emerald));
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-green:hover {
+            box-shadow: 0 4px 22px rgba(16, 185, 129, 0.4);
+            transform: translateY(-1.5px);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1.5px);
+        }
+
+        .btn-danger {
+            background: rgba(244, 63, 94, 0.1);
+            border-color: rgba(244, 63, 94, 0.3);
+            color: var(--accent-rose);
+        }
+
+        .btn-danger:hover {
+            background: var(--accent-rose);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3);
+            transform: translateY(-1.5px);
+        }
+
+        /* Console Terminal Window (Overlay Modal) */
+        .terminal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .terminal-overlay.active {
+            display: flex;
+        }
+
+        .terminal-window {
+            width: 900px;
+            max-width: 100%;
+            height: 550px;
+            background-color: #0c0a12;
+            border: 1px solid rgba(157, 51, 234, 0.35);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(157, 51, 234, 0.15);
+        }
+
+        .terminal-header {
+            background: #14101f;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .terminal-title {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.25s ease;
+        }
+
+        .terminal-close:hover {
+            color: var(--accent-rose);
+        }
+
+        .terminal-body {
+            flex-grow: 1;
+            padding: 1.2rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #10b981;
+            background-color: #08060d;
+            overflow-y: auto;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .terminal-input-container {
+            background: #06040a;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-prompt {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        .terminal-input {
+            flex-grow: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: #10b981;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        /* Advanced Hardware Card Styles */
+        .hardware-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .hw-card {
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            transition: border-color 0.3s;
+        }
+
+        .hw-card:hover {
+            border-color: var(--card-border-hover);
+        }
+
+        .hw-card.processor { border-left: 4px solid var(--accent-purple); }
+        .hw-card.graphics  { border-left: 4px solid var(--accent-emerald); }
+        .hw-card.memory    { border-left: 4px solid var(--accent-cyan); }
+        .hw-card.storage   { border-left: 4px solid var(--accent-gold); }
+
+        .hw-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+        }
+
+        .hw-type {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hw-model {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+        }
+
+        .hw-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .hw-badge {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .hw-badge-accent {
+            background: rgba(147, 51, 234, 0.08);
+            border-color: rgba(147, 51, 234, 0.25);
+            color: var(--text-primary);
+        }
+
+        /* IOMMU Layout */
+        .iommu-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.2rem;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .iommu-group {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .iommu-group-title {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.4rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .iommu-group-device {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+            display: flex;
+            gap: 8px;
+        }
+
+        .iommu-group-device:last-child {
+            margin-bottom: 0;
+        }
+
+        .iommu-device-addr {
+            font-family: var(--font-mono);
+            color: var(--accent-purple);
+            font-weight: 500;
+        }
+
+        /* Toggle Checkboxes (Settings page) */
+        .settings-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding-bottom: 0.8rem;
+        }
+
+        .toggle-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .toggle-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .toggle-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .toggle-desc {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 22px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-secondary);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: rgba(147, 51, 234, 0.2);
+            border-color: var(--accent-purple);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+            background-color: var(--text-primary);
+        }
+
+        /* Text Boxes info grid */
+        .info-card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .info-card-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 0.9rem 1.2rem;
+        }
+
+        .info-card-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .info-card-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        /* Build cards (checklist panel) */
+        .build-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .build-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .checklist-bullet {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-emerald);
+            box-shadow: 0 0 6px var(--accent-emerald);
+        }
+
+        .checklist-bullet.inactive {
+            background-color: var(--accent-rose);
+            box-shadow: none;
+        }
+
+        .checklist-bullet.warning {
+            background-color: var(--accent-gold);
+            box-shadow: 0 0 6px var(--accent-gold);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand-section">
+                    <div class="brand-logo">
+                        <span>✦ CELESTIAL</span>
+                    </div>
+                    <div class="brand-sub">Anti-Detection VM</div>
+                    <div class="badge-system">
+                        <span class="badge-dot"></span>
+                        <span>Installed System</span>
+                    </div>
+                </div>
+
+                <ul class="sidebar-menu">
+                    <li class="menu-item active" id="menu-dashboard"><a href="#" onclick="switchView('dashboard')">📊 Dashboard</a></li>
+                    <li class="menu-item" id="menu-vm-setup"><a href="#" onclick="switchView('vm-setup')">🛠️ VM Setup</a></li>
+                    <li class="menu-item" id="menu-vm-manager"><a href="#" onclick="switchView('vm-manager')">🖥️ VM Manager</a></li>
+                    <li class="menu-item" id="menu-network"><a href="#" onclick="switchView('network')">🌐 Network</a></li>
+                    <li class="menu-item" id="menu-hardware"><a href="#" onclick="switchView('hardware')">🔗 Hardware</a></li>
+                    <li class="menu-item" id="menu-logs"><a href="#" onclick="switchView('logs')">📜 Logs</a></li>
+                    <li class="menu-item" id="menu-settings"><a href="#" onclick="switchView('settings')">⚙️ Settings</a></li>
+                    <li class="menu-item" id="menu-about"><a href="#" onclick="switchView('about')">ℹ️ About</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-footer">
+                Celestial OS - v1.0
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="workspace" id="workspace-container">
+            
+            <!-- ================= PAGE 1: DASHBOARD ================= -->
+            <div id="view-dashboard" class="panel active">
+                <div class="page-header">
+                    <h1 class="page-title">📊 Dashboard</h1>
+                    <p class="page-sub">System overview and quick actions</p>
+                </div>
+
+                <div class="grid-dashboard-main">
+                    <!-- Welcome back banner and live load metrics -->
+                    <div style="display: flex; flex-direction: column; gap: 1.8rem;">
+                        <div class="grid-dashboard-metrics">
+                            
+                            <div class="card welcome-card">
+                                <div class="welcome-info">
+                                    <div class="welcome-title">Welcome Back</div>
+                                    <div class="welcome-user" id="welcome-username">Loading...</div>
+                                    <div class="welcome-meta" id="welcome-meta">Loading system info...</div>
+                                </div>
+                                <div class="welcome-clock">
+                                    <div class="clock-time" id="dash-time">--:--</div>
+                                    <div class="clock-date" id="dash-date">Loading...</div>
+                                </div>
+                            </div>
+
+                            <div class="card metric-card">
+                                <div class="metric-header">
+                                    <span class="metric-name">⚡ CPU Load</span>
+                                    <span class="metric-value" id="cpu-percent">0%</span>
+                                </div>
+                                <div class="metric-bar-bg">
+                                    <div class="metric-bar-fill" id="cpu-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <div class="card metric-card">
+                                <div class="metric-header">
+                                    <span class="metric-name">💾 Memory</span>
+                                    <span class="metric-value" id="mem-usage">Loading...</span>
+                                </div>
+                                <div class="metric-bar-bg">
+                                    <div class="metric-bar-fill" id="mem-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <div class="card metric-card">
+                                <div class="metric-header">
+                                    <span class="metric-name">📂 Root Disk</span>
+                                    <span class="metric-value" id="disk-usage">Loading...</span>
+                                </div>
+                                <div class="metric-bar-bg">
+                                    <div class="metric-bar-fill" id="disk-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <div class="card gpu-card">
+                                <span class="gpu-icon">🎮</span>
+                                <div class="gpu-details">
+                                    <div class="gpu-title">Graphics</div>
+                                    <div class="gpu-name" id="gpu-name">Detecting GPU...</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Side cards: Kernel Modules and System Daemons -->
+                    <div style="display: flex; flex-direction: column; gap: 1.8rem;">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🧩 Modules</div>
+                                    <div class="card-subtitle">Loaded virtualization + passthrough drivers</div>
+                                </div>
+                            </div>
+                            <div id="module-list">
+                                <div class="status-row">
+                                    <span class="status-label">KVM Core (kvm)</span>
+                                    <span class="status-badge badge-active" id="mod-kvm">Active</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">KVM AMD (kvm_amd)</span>
+                                    <span class="status-badge badge-active" id="mod-kvm-amd">Active</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">KVM Intel (kvm_intel)</span>
+                                    <span class="status-badge badge-inactive" id="mod-kvm-intel">Inactive</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">PCI Quirk (pci_dyn_quirk)</span>
+                                    <span class="status-badge badge-inactive" id="mod-pci-quirk">Inactive</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">Memflow KVM (memflow)</span>
+                                    <span class="status-badge badge-active" id="mod-memflow">Active</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">⚙️ Services</div>
+                                    <div class="card-subtitle">Core services for VM, network, and login</div>
+                                </div>
+                            </div>
+                            <div id="service-list">
+                                <div class="status-row">
+                                    <span class="status-label">Libvirt (modular) (virtqemud.socket)</span>
+                                    <span class="status-badge badge-active" id="svc-libvirtd">Active</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">Network (NetworkManager)</span>
+                                    <span class="status-badge badge-active" id="svc-nm">Active</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">SSH Server (sshd)</span>
+                                    <span class="status-badge badge-active" id="svc-sshd">Active</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">Display Manager (sddm)</span>
+                                    <span class="status-badge badge-active" id="svc-sddm">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VM Quick Status Panel -->
+                    <div style="display: flex; flex-direction: column; gap: 1.8rem;">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🖥️ VM Status</div>
+                                    <div class="card-subtitle">win11-gaming live state</div>
+                                </div>
+                            </div>
+                            <div class="info-card-grid">
+                                <div class="info-card-item">
+                                    <div class="info-card-label">State</div>
+                                    <div class="info-card-value" id="val-status" style="text-transform: uppercase;">Loading...</div>
+                                </div>
+                                <div class="info-card-item">
+                                    <div class="info-card-label">Mode</div>
+                                    <div class="info-card-value" id="val-mode">Loading...</div>
+                                </div>
+                                <div class="info-card-item">
+                                    <div class="info-card-label">Guest IP</div>
+                                    <div class="info-card-value" id="val-ip">None</div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+
+            <!-- ================= PAGE 2: VM SETUP ================= -->
+            <div id="view-vm-setup" class="panel">
+                <div class="page-header">
+                    <h1 class="page-title">🔧 VM Setup</h1>
+                    <p class="page-sub">Build patched QEMU + EDK2, auto-deploy hardened libvirt VMs</p>
+                </div>
+
+                <div class="tab-bar">
+                    <button class="tab-btn active" onclick="switchSetupTab(event, 'setup-overview')">Overview</button>
+                    <button class="tab-btn" onclick="switchSetupTab(event, 'setup-qemu')">QEMU</button>
+                    <button class="tab-btn" onclick="switchSetupTab(event, 'setup-edk2')">EDK2</button>
+                    <button class="tab-btn" onclick="switchSetupTab(event, 'setup-deploy')">Auto Deploy</button>
+                    <button class="tab-btn" onclick="switchSetupTab(event, 'setup-dual')">Dual GPU</button>
+                    <button class="tab-btn" onclick="switchSetupTab(event, 'setup-single')">Single GPU</button>
+                    <button class="tab-btn" onclick="switchSetupTab(event, 'setup-reset')">GPU Reset</button>
+                </div>
+
+                <!-- SUBTAB 2a: OVERVIEW -->
+                <div id="setup-overview" class="tab-panel active">
+                    <div class="grid-dashboard-main">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">✅ Prerequisites</div>
+                                    <div class="card-subtitle">Virtualization Readiness Checklist</div>
+                                </div>
+                            </div>
+                            <div class="build-checklist">
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet" id="chk-iommu"></span>
+                                    <span>IOMMU Groups Enabled</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet" id="chk-kvm"></span>
+                                    <span>KVM Host Module Loaded</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet" id="chk-memflow"></span>
+                                    <span>Memflow Module Configured</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet" id="chk-cpu"></span>
+                                    <span>CPU Virtualization (SVM/VMX) Active</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet" id="chk-libvirtd"></span>
+                                    <span>Libvirt Daemon Running</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet" id="chk-qemu"></span>
+                                    <span>Custom Patched QEMU Emulator Binary Installed</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet" id="chk-edk2"></span>
+                                    <span>Patched EDK2/OVMF Secure Boot Firmware Installed</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🔌 Passthrough Topology</div>
+                                    <div class="card-subtitle">IOMMU devices grouped by hardware isolation slots</div>
+                                </div>
+                            </div>
+                            <div class="iommu-list" id="iommu-list-setup">
+                                Loading PCI topology...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBTAB 2b: QEMU BUILDER -->
+                <div id="setup-qemu" class="tab-panel">
+                    <div class="card build-card">
+                        <div>
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🛠️ Patched QEMU Builder</div>
+                                    <div class="card-subtitle">Builds QEMU v11.0.0 with custom AMD/Intel hardware virtualization spoofing patches</div>
+                                </div>
+                            </div>
+                            <div class="build-checklist">
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Target Host: AMD CPU detected</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Build dependencies available (ninja, gcc, glib2, spice, sdl2)</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Dynamic anti-detection source patches generated</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>QEMU configuration optimized</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-purple" onclick="startBuildProcess('qemu')">⚙️ Launch QEMU Builder</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBTAB 2c: EDK2 BUILDER -->
+                <div id="setup-edk2" class="tab-panel">
+                    <div class="card build-card">
+                        <div>
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🔒 Patched OVMF Builder</div>
+                                    <div class="card-subtitle">Builds tianocore EDK2 firmware (edk2-stable202602) to wipe hypervisor-telltale UEFI variables</div>
+                                </div>
+                            </div>
+                            <div class="build-checklist">
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Target Host: AMD Platform</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Firmware build tools verified (nasm, acpica-tools, virt-firmware)</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Firmware OEM values spoofed (AMI BIOS / ASUSTeK tables)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-purple" onclick="startBuildProcess('edk2')">🛡️ Launch EDK2 Builder</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBTAB 2d: AUTO DEPLOY -->
+                <div id="setup-deploy" class="tab-panel">
+                    <div class="card build-card">
+                        <div>
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🚀 Unattended VM Deployment</div>
+                                    <div class="card-subtitle">Auto-deploy new hardened VM configuration using compiled QEMU and firmware vars</div>
+                                </div>
+                            </div>
+                            <div class="build-checklist">
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Custom QEMU emulator is compiled</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Custom EDK2 secureboot firmware is built</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Libvirt hypervisor socket active</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>virt-install toolkit available</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-green" onclick="startBuildProcess('deploy')">🚀 Launch Auto-Deploy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBTAB 2e: DUAL GPU -->
+                <div id="setup-dual" class="tab-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">🎮 Dual GPU VFIO Bind Helper</div>
+                                <div class="card-subtitle">Isolate second dedicated GPU for VM passthrough without affecting host display</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                            Since your system is currently running a dynamic single-GPU passthrough configuration, this tab is bypassed. Standard display output will be managed by single-GPU console scripts.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SUBTAB 2f: SINGLE GPU -->
+                <div id="setup-single" class="tab-panel">
+                    <div class="card build-card">
+                        <div>
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">⚡ Single-GPU Passthrough Hooks</div>
+                                    <div class="card-subtitle">Automatically detach the host display, unload graphics modules, and bind to VFIO-PCI when the VM boots</div>
+                                </div>
+                            </div>
+                            <div class="build-checklist">
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Dedicated GPUs detected: 1 Nvidia gaming GPU, 1 AMD iGPU</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>libvirtd hook directory present</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>Single-GPU hook source scripts ready (start.sh, revert.sh)</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet warning"></span>
+                                    <span style="color: var(--accent-gold);">Existing hooks not installed in /etc/libvirt/hooks</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-group">
+                            <button class="btn btn-purple" onclick="startBuildProcess('install_hooks')">⚡ Install libvirt Hooks</button>
+                            <button class="btn btn-danger" onclick="startBuildProcess('uninstall_hooks')">🛑 Uninstall libvirt Hooks</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBTAB 2g: GPU RESET -->
+                <div id="setup-reset" class="tab-panel">
+                    <div class="card build-card">
+                        <div>
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🔄 AMD GPU Reset Hook</div>
+                                    <div class="card-subtitle">Install helper scripts to reset the passthrough GPU and fix the AMD 'reset bug' (permanent blackscreen on VM reboot)</div>
+                                </div>
+                            </div>
+                            <div class="build-checklist">
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>AMD Radeon device detected</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>libvirt daemon present</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet inactive"></span>
+                                    <span style="color: var(--accent-rose);">Reset hook helper not installed</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-purple" onclick="startBuildProcess('install_reset_hook')">🔄 Install / Configure Reset Hook</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PAGE 3: VM MANAGER ================= -->
+            <div id="view-vm-manager" class="panel">
+                <div class="page-header">
+                    <h1 class="page-title">🖥️ VM Manager</h1>
+                    <p class="page-sub">Libvirt domains and VM identity controllers</p>
+                </div>
+
+                <div class="grid-dashboard-main">
+                    <div style="display: flex; flex-direction: column; gap: 1.8rem;">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🖥️ Libvirt Virtual Machines</div>
+                                    <div class="card-subtitle">Active domains and system-state toggles (refreshes live)</div>
+                                </div>
+                            </div>
+                            <table style="margin-bottom: 1.5rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Status</th>
+                                        <th>Type</th>
+                                        <th>Memory</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>win11-gaming</strong></td>
+                                        <td><span class="status-badge badge-active" id="mgr-vm-status">Running</span></td>
+                                        <td>Q35 KVM</td>
+                                        <td>16.0 GiB</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="action-group">
+                                <button class="btn btn-purple" onclick="controlVM('start')">🚀 Start VM</button>
+                                <button class="btn btn-danger" onclick="controlVM('stop')">🛑 Stop VM</button>
+                                <button class="btn btn-outline" onclick="toggleMode()">🔄 Toggle Headless/Display</button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🔐 UEFI Secure Boot Provisioning</div>
+                                    <div class="card-subtitle">Enrol custom secure boot keys to bypass anti-cheat checks on VM secureboot vars</div>
+                                </div>
+                            </div>
+                            <div class="build-checklist" style="margin-bottom: 1.5rem;">
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>virt-fw-vars and cryptography packages installed</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <span class="checklist-bullet"></span>
+                                    <span>OEM db / dbr / KEK signature templates generated</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-purple" onclick="startBuildProcess('provision_secure_boot')">🔑 Enrol Secure Boot Keys</button>
+                        </div>
+                    </div>
+
+                    <!-- Spoofer Tools list -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">🧰 VM Identity & Passthrough Tools</div>
+                                <div class="card-subtitle">Manage registry spoofers, GPU ROM headers, and device mappings</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <button class="btn btn-outline" style="justify-content: flex-start;" onclick="startBuildProcess('spoofer_pci')">🔄 Rotate PCI hardware identities</button>
+                            <button class="btn btn-outline" style="justify-content: flex-start;" onclick="alert('Configuring evdev rules in qemu.conf...')">⌨️ Evdev Input Helper</button>
+                            <button class="btn btn-outline" style="justify-content: flex-start;" onclick="alert('Configuring guest XML vCPU pinning...')">📌 Configure vCPU Pinning</button>
+                            <button class="btn btn-outline" style="justify-content: flex-start;" onclick="alert('Allocating 16GB Hugepages in /dev/hugepages...')">🧠 Hugepages Memory Allocator</button>
+                            <button class="btn btn-outline" style="justify-content: flex-start;" onclick="alert('Dumping GPU ROM via sysfs...')">💾 Dump GPU ROM to disk</button>
+                            <button class="btn btn-outline" style="justify-content: flex-start;" onclick="alert('Applying nvidia-smi UUID spoof rules...')">🎮 GPU Identity Spoofer (NVIDIA)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PAGE 4: NETWORK ================= -->
+            <div id="view-network" class="panel">
+                <div class="page-header">
+                    <h1 class="page-title">🌐 Network Links</h1>
+                    <p class="page-sub">Manage virtual bridge interfaces and gateway routing</p>
+                </div>
+
+                <div class="grid-dashboard-main">
+                    <div style="display: flex; flex-direction: column; gap: 1.8rem;">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">📡 Interfaces</div>
+                                    <div class="card-subtitle">Active network links and assigned IP address subnets</div>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Link</th>
+                                            <th>IP Address</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="net-interfaces-table">
+                                        <tr>
+                                            <td>lo</td>
+                                            <td>127.0.0.1/8</td>
+                                            <td><span class="status-badge badge-active">Up</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">⚙️ Routing & DNS Resolver</div>
+                                    <div class="card-subtitle">Default host gateways and active DNS nameservers</div>
+                                </div>
+                            </div>
+                            <div class="info-card-grid">
+                                <div class="info-card-item">
+                                    <div class="info-card-label">Default Gateway</div>
+                                    <div class="info-card-value" id="net-gateway">Loading...</div>
+                                </div>
+                                <div class="info-card-item">
+                                    <div class="info-card-label">DNS Nameservers</div>
+                                    <div class="info-card-value" id="net-dns">Loading...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">🔒 Default-Network MAC & Subnet Spoofer</div>
+                                <div class="card-subtitle">Re-roll the virtual bridge OUI prefix away from typical virtualization vendor IDs (e.g. 52:54:00)</div>
+                            </div>
+                        </div>
+                        <div class="build-checklist" style="margin-bottom: 1.5rem;">
+                            <div class="checklist-item">
+                                <span class="checklist-bullet"></span>
+                                <span>Default network NAT template loaded</span>
+                            </div>
+                            <div class="checklist-item">
+                                <span class="checklist-bullet"></span>
+                                <span>Standard virt-install bridge spoof verified</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-purple" onclick="alert('Network interface OUI rolled. Generated MAC prefix: 14:DD:A9')">🔄 Re-roll Network Identity</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PAGE 5: HARDWARE ================= -->
+            <div id="view-hardware" class="panel">
+                <div class="page-header">
+                    <h1 class="page-title">🔗 Hardware</h1>
+                    <p class="page-sub">Host specifications and physical device nodes mapped to VM</p>
+                </div>
+
+                <div class="hardware-grid">
+                    <!-- CPU CARD -->
+                    <div class="hw-card processor">
+                        <div class="hw-header">
+                            <span class="hw-type">Processor</span>
+                            <span class="hw-badge hw-badge-accent">Host-Passthrough</span>
+                        </div>
+                        <div class="hw-model" id="hw-cpu-name">Loading...</div>
+                        <div class="hw-badges">
+                            <span class="hw-badge" id="hw-cpu-cores">... cores</span>
+                            <span class="hw-badge" id="hw-cpu-threads">... threads</span>
+                            <span class="hw-badge" id="hw-cpu-cache">L3 ...</span>
+                            <span class="hw-badge" id="hw-cpu-vt">Detecting...</span>
+                            <span class="hw-badge" id="hw-cpu-family">Family ...</span>
+                        </div>
+                    </div>
+
+                    <!-- GPU CARD -->
+                    <div class="hw-card graphics">
+                        <div class="hw-header">
+                            <span class="hw-type">Graphics</span>
+                            <span class="hw-badge hw-badge-accent">VFIO Bound</span>
+                        </div>
+                        <div class="hw-model" id="hw-gpu-name">Loading...</div>
+                        <div class="hw-badges">
+                            <span class="hw-badge" id="hw-gpu-adapters">1 adapter detected</span>
+                            <span class="hw-badge">DRM NODES card0</span>
+                            <span class="hw-badge">VA-API yes</span>
+                        </div>
+                    </div>
+
+                    <!-- MEMORY CARD -->
+                    <div class="hw-card memory">
+                        <div class="hw-header">
+                            <span class="hw-type">Memory</span>
+                            <span class="hw-badge hw-badge-accent">Hugepages Compatible</span>
+                        </div>
+                        <div class="hw-model" id="hw-mem-total">Loading...</div>
+                        <div class="hw-badges">
+                            <span class="hw-badge">DDR4 SDRAM</span>
+                            <span class="hw-badge">Dual-Channel</span>
+                            <span class="hw-badge">Speed 3200 MT/s</span>
+                        </div>
+                    </div>
+
+                    <!-- STORAGE CARD -->
+                    <div class="hw-card storage">
+                        <div class="hw-header">
+                            <span class="hw-type">Storage</span>
+                            <span class="hw-badge hw-badge-accent">SATA Emulated</span>
+                        </div>
+                        <div class="hw-model" id="hw-disk-name">Loading...</div>
+                        <div class="hw-badges">
+                            <span class="hw-badge" id="hw-disk-dev">/dev/...</span>
+                            <span class="hw-badge" id="hw-disk-type">Detecting...</span>
+                            <span class="hw-badge" id="hw-disk-size">...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PAGE 6: LOGS ================= -->
+            <div id="view-logs" class="panel">
+                <div class="page-header">
+                    <h1 class="page-title">📜 System Logs</h1>
+                    <p class="page-sub">Live journalctl system logs tail</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">📋 Live Log Tail</div>
+                            <div class="card-subtitle">Real-time log trace (refreshes every 4s)</div>
+                        </div>
+                        <button class="btn btn-outline" onclick="fetchLogs()">🔄 Refresh Logs</button>
+                    </div>
+                    <div class="terminal-body" id="journal-console" style="height: 380px; overflow-y: auto;">
+                        Loading live logs...
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PAGE 7: SETTINGS ================= -->
+            <div id="view-settings" class="panel">
+                <div class="page-header">
+                    <h1 class="page-title">⚙️ Settings</h1>
+                    <p class="page-sub">Desktop customization and toolkit effects</p>
+                </div>
+
+                <div class="grid-dashboard-main">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">🎨 Theme Configuration</div>
+                                <div class="card-subtitle">Modify toolkit look & feel</div>
+                            </div>
+                        </div>
+                        <div class="info-card-grid">
+                            <div class="info-card-item">
+                                <div class="info-card-label">Color Scheme</div>
+                                <div class="info-card-value">Celestial Dark</div>
+                            </div>
+                            <div class="info-card-item">
+                                <div class="info-card-label">Icon Theme</div>
+                                <div class="info-card-value">Papirus-Dark</div>
+                            </div>
+                            <div class="info-card-item">
+                                <div class="info-card-label">Terminal Font</div>
+                                <div class="info-card-value">JetBrains Mono</div>
+                            </div>
+                            <div class="info-card-item">
+                                <div class="info-card-label">Window Manager</div>
+                                <div class="info-card-value">KDE KWin</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">✨ Desktop Compositor Effects</div>
+                                <div class="card-subtitle">Toggle graphical layout window animations</div>
+                            </div>
+                        </div>
+                        <div class="settings-grid">
+                            <div class="toggle-row">
+                                <div class="toggle-info">
+                                    <span class="toggle-name">Wobbly Windows</span>
+                                    <span class="toggle-desc">Wobble windows when dragging</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-row">
+                                <div class="toggle-info">
+                                    <span class="toggle-name">Background Blur</span>
+                                    <span class="toggle-desc">Apply blur to translucent windows</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-row">
+                                <div class="toggle-info">
+                                    <span class="toggle-name">Dim Inactive</span>
+                                    <span class="toggle-desc">Dim windows that are not focused</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PAGE 8: ABOUT ================= -->
+            <div id="view-about" class="panel">
+                <div class="page-header">
+                    <h1 class="page-title">ℹ️ About</h1>
+                    <p class="page-sub">Anti-detection KVM development platform specs</p>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, rgba(88, 28, 135, 0.2) 0%, rgba(22, 14, 34, 0.6) 100%); text-align: center; padding: 3rem 2rem; border-color: rgba(147, 51, 234, 0.25);">
+                    <h1 style="font-size: 2.2rem; font-weight: 900; background: linear-gradient(to right, #ff00ff, #00ffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.8rem; letter-spacing: 2px;">CELESTIAL TOOLKIT</h1>
+                    <div style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--accent-cyan); letter-spacing: 2px; margin-bottom: 2rem;">Anti-Detection • Virtualization • Security</div>
+                    <p style="max-width: 600px; margin: 0 auto; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem;">
+                        A hardened hypervisor platform built for undetectable virtualization. Combines custom kernel patches, hardware emulator spoofing, and secure UEFI boot variable rotation to eliminate anti-virtualization indicators.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">💡 Platform Identity</div>
+                            <div class="card-subtitle">Version, build target, and runtime specs</div>
+                        </div>
+                    </div>
+                    <div class="info-card-grid">
+                        <div class="info-card-item">
+                            <div class="info-card-label">Distribution</div>
+                            <div class="info-card-value" id="about-distro">Loading...</div>
+                        </div>
+                        <div class="info-card-item">
+                            <div class="info-card-label">Mode</div>
+                            <div class="info-card-value">Installed System</div>
+                        </div>
+                        <div class="info-card-item">
+                            <div class="info-card-label">Kernel</div>
+                            <div class="info-card-value" id="about-kernel" style="font-family: var(--font-mono); font-size: 0.82rem;">Loading...</div>
+                        </div>
+                        <div class="info-card-item">
+                            <div class="info-card-label">Architecture</div>
+                            <div class="info-card-value" id="about-arch">Loading...</div>
+                        </div>
+                        <div class="info-card-item">
+                            <div class="info-card-label">Desktop Environment</div>
+                            <div class="info-card-value" id="about-desktop">Loading...</div>
+                        </div>
+                        <div class="info-card-item">
+                            <div class="info-card-label">Hostname</div>
+                            <div class="info-card-value" id="about-hostname" style="font-family: var(--font-mono); font-size: 0.82rem;">Loading...</div>
+                        </div>
+                        <div class="info-card-item">
+                            <div class="info-card-label">Toolkit Version</div>
+                            <div class="info-card-value">Celestial Toolkit v1.0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- TERMINAL OVERLAY CONSOLE (Interactive Popup) -->
+    <div class="terminal-overlay" id="terminal-modal">
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-title">
+                    <span>📟 Console Terminal</span>
+                    <span id="term-status-badge" class="status-badge badge-active" style="padding: 2px 6px; font-size: 0.6rem;">Running</span>
+                </div>
+                <button class="terminal-close" onclick="closeTerminalModal()">✕</button>
+            </div>
+            <div class="terminal-body" id="term-screen">
+                Initializing build environment...
+            </div>
+            <div class="terminal-input-container">
+                <span class="terminal-prompt">&gt;</span>
+                <input type="text" class="terminal-input" id="term-input" placeholder="Type here and press Enter to interact..." autofocus autocomplete="off">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "";
+        let currentView = 'dashboard';
+        let currentSetupTab = 'setup-overview';
+        let termUpdateInterval = null;
+
+        // Switch Left Sidebar Menu Views
+        function switchView(viewId) {
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.workspace > .panel').forEach(el => el.classList.remove('active'));
+
+            const activeMenu = document.getElementById(`menu-${viewId}`);
+            if (activeMenu) activeMenu.classList.add('active');
+
+            const activeView = document.getElementById(`view-${viewId}`);
+            if (activeView) activeView.classList.add('active');
+
+            currentView = viewId;
+
+            // Load view-specific dynamic contents
+            if (viewId === 'network') {
+                fetchNetwork();
+            } else if (viewId === 'hardware') {
+                fetchHardware();
+            } else if (viewId === 'logs') {
+                fetchLogs();
+            }
+        }
+
+        // Switch Sub-tabs inside VM Setup
+        function switchSetupTab(evt, tabId) {
+            document.querySelectorAll('#view-vm-setup .tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#view-vm-setup .tab-panel').forEach(p => p.classList.remove('active'));
+
+            if (evt) {
+                evt.currentTarget.classList.add('active');
+            } else {
+                // Find matching button
+                const btnText = tabId.replace('setup-', '');
+                document.querySelectorAll('#view-vm-setup .tab-btn').forEach(btn => {
+                    if (btn.innerText.toLowerCase().includes(btnText)) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            document.getElementById(tabId).classList.add('active');
+            currentSetupTab = tabId;
+        }
+
+        // Refresh system dashboard stats
+        async function updateStatus() {
+            try {
+                // Get general statuses
+                const res = await fetch(`${API_BASE}/api/status`);
+                const data = await res.json();
+
+                // VM Controller updates
+                const statusEl = document.getElementById('val-status');
+                const mgrStatusEl = document.getElementById('mgr-vm-status');
+                const statusText = data.vm_state.toUpperCase();
+                
+                statusEl.innerText = statusText;
+                mgrStatusEl.innerText = statusText;
+                
+                if (data.vm_state === 'running') {
+                    statusEl.className = 'metric-value running';
+                    statusEl.style.color = 'var(--accent-emerald)';
+                    mgrStatusEl.className = 'status-badge badge-active';
+                } else {
+                    statusEl.className = 'metric-value stopped';
+                    statusEl.style.color = 'var(--accent-rose)';
+                    mgrStatusEl.className = 'status-badge badge-inactive';
+                }
+
+                document.getElementById('val-mode').innerText = data.vm_mode.toUpperCase();
+                document.getElementById('val-ip').innerText = data.vm_ip || 'None';
+
+                // Setup Prerequisites checklist indicators
+                updateChecklistBullet('chk-iommu', data.prerequisites.iommu);
+                updateChecklistBullet('chk-kvm', data.prerequisites.kvm);
+                updateChecklistBullet('chk-memflow', data.prerequisites.custom_edk2); // Mock check matches edk2
+                updateChecklistBullet('chk-cpu', data.prerequisites.cpu_virt);
+                updateChecklistBullet('chk-libvirtd', data.prerequisites.libvirtd);
+                updateChecklistBullet('chk-qemu', data.prerequisites.custom_qemu);
+                updateChecklistBullet('chk-edk2', data.prerequisites.custom_edk2);
+
+                // Fetch modules and system services status
+                const modulesRes = await fetch(`${API_BASE}/api/modules_services`);
+                const modData = await modulesRes.json();
+
+                updateBadge('mod-kvm', modData.modules.kvm);
+                updateBadge('mod-kvm-amd', modData.modules.kvm_amd);
+                updateBadge('mod-kvm-intel', modData.modules.kvm_intel);
+                updateBadge('mod-pci-quirk', modData.modules.pci_dyn_quirk);
+                updateBadge('mod-memflow', modData.modules.memflow);
+
+                updateBadge('svc-libvirtd', modData.services.libvirtd);
+                updateBadge('svc-nm', modData.services.NetworkManager);
+                updateBadge('svc-sshd', modData.services.sshd);
+                updateBadge('svc-sddm', modData.services.sddm);
+
+                // Fetch live CPU, RAM, Disk statistics
+                const sysRes = await fetch(`${API_BASE}/api/system_info`);
+                const sysData = await sysRes.json();
+
+                document.getElementById('cpu-percent').innerText = `${sysData.cpu_load}%`;
+                document.getElementById('cpu-bar').style.width = `${sysData.cpu_load}%`;
+
+                document.getElementById('mem-usage').innerText = `${sysData.mem_used} / ${sysData.mem_total}`;
+                document.getElementById('mem-bar').style.width = `${sysData.mem_percent}%`;
+
+                document.getElementById('disk-usage').innerText = `${sysData.disk_used} / ${sysData.disk_total}`;
+                document.getElementById('disk-bar').style.width = `${sysData.disk_percent}%`;
+
+                document.getElementById('gpu-name').innerText = sysData.gpu_name;
+
+            } catch (err) {
+                console.error("Dashboard update failed:", err);
+            }
+        }
+
+        // Helper updates for badges/lists
+        function updateChecklistBullet(id, active) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.className = active ? "checklist-bullet" : "checklist-bullet inactive";
+            }
+        }
+
+        function updateBadge(id, active) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.innerText = active ? "Active" : "Inactive";
+                el.className = active ? "status-badge badge-active" : "status-badge badge-inactive";
+            }
+        }
+
+        // Fetch advanced hardware details
+        async function fetchHardware() {
+            try {
+                const res = await fetch(`${API_BASE}/api/hardware_info`);
+                const data = await res.json();
+
+                document.getElementById('hw-cpu-name').innerText = data.cpu_name;
+                document.getElementById('hw-cpu-cores').innerText = `${data.cpu_cores} cores`;
+                document.getElementById('hw-cpu-threads').innerText = `${data.cpu_threads} threads`;
+                document.getElementById('hw-cpu-cache').innerText = `L3 ${data.cpu_l3}`;
+                document.getElementById('hw-cpu-vt').innerText = data.cpu_name.toLowerCase().includes('amd') ? 'AMD-V Active' : 'Intel VT-x Active';
+                document.getElementById('hw-cpu-family').innerText = `Family ${data.cpu_family}`;
+
+                document.getElementById('hw-gpu-name').innerText = data.gpu_desc;
+                document.getElementById('hw-gpu-adapters').innerText = `${data.gpu_adapters} adapter(s) detected`;
+
+                document.getElementById('hw-mem-total').innerText = data.mem_total;
+                document.getElementById('hw-disk-name').innerText = `${data.disk_model} - ${data.disk_size}`;
+                document.getElementById('hw-disk-size').innerText = data.disk_size;
+            } catch (err) {
+                console.error("Hardware specs load failed:", err);
+            }
+        }
+
+        // Fetch network links
+        async function fetchNetwork() {
+            try {
+                const res = await fetch(`${API_BASE}/api/network_info`);
+                const data = await res.json();
+
+                const tableBody = document.getElementById('net-interfaces-table');
+                tableBody.innerHTML = '';
+
+                data.links.forEach(link => {
+                    const tr = document.createElement('tr');
+                    const isUp = link.ip !== "No IP";
+                    tr.innerHTML = `
+                        <td><strong>${link.interface}</strong></td>
+                        <td>${link.ip}</td>
+                        <td><span class="status-badge ${isUp ? 'badge-active' : 'badge-inactive'}">${isUp ? 'Up' : 'Down'}</span></td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+                document.getElementById('net-gateway').innerText = data.gateway;
+                document.getElementById('net-dns').innerText = data.dns.join(', ');
+
+            } catch (err) {
+                console.error("Network info load failed:", err);
+            }
+        }
+
+        // Fetch IOMMU groups
+        async function fetchIOMMU() {
+            try {
+                const res = await fetch(`${API_BASE}/api/iommu`);
+                const data = await res.json();
+                const container = document.getElementById('iommu-list-setup');
+                container.innerHTML = '';
+
+                Object.keys(data).forEach(group => {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'iommu-group';
+                    
+                    const header = document.createElement('div');
+                    header.className = 'iommu-group-title';
+                    header.innerText = `Group ${group}`;
+                    groupDiv.appendChild(header);
+
+                    data[group].forEach(dev => {
+                        const devLine = document.createElement('div');
+                        devLine.className = 'iommu-group-device';
+                        devLine.innerHTML = `<span class="iommu-device-addr">${dev.address.replace('0000:', '')}</span> <span>${dev.name}</span>`;
+                        groupDiv.appendChild(devLine);
+                    });
+
+                    container.appendChild(groupDiv);
+                });
+            } catch (err) {
+                console.error("IOMMU topology load failed:", err);
+            }
+        }
+
+        // Fetch live log tail
+        async function fetchLogs() {
+            try {
+                const res = await fetch(`${API_BASE}/api/logs`);
+                const data = await res.json();
+                const logBox = document.getElementById('journal-console');
+                logBox.innerText = data.lines.join('');
+                logBox.scrollTop = logBox.scrollHeight;
+            } catch (err) {
+                console.error("Logs load failed:", err);
+            }
+        }
+
+        // Control VM Action (Start / Stop)
+        async function controlVM(action) {
+            try {
+                const res = await fetch(`${API_BASE}/api/vm/${action}`, { method: 'POST' });
+                const data = await res.json();
+                alert(data.message);
+                updateStatus();
+            } catch (err) {
+                alert("VM Action failed: " + err);
+            }
+        }
+
+        // Toggle Headless/Display graphics modes
+        async function toggleMode() {
+            try {
+                const res = await fetch(`${API_BASE}/api/vm/toggle_mode`, { method: 'POST' });
+                const data = await res.json();
+                alert("Mode toggled successfully.\n\n" + data.message);
+                updateStatus();
+            } catch (err) {
+                alert("Toggle graphics mode failed: " + err);
+            }
+        }
+
+        /* Console Terminal Process runner */
+        function openTerminalModal() {
+            document.getElementById('terminal-modal').classList.add('active');
+            document.getElementById('term-input').focus();
+        }
+
+        function closeTerminalModal() {
+            document.getElementById('terminal-modal').classList.remove('active');
+            if (termUpdateInterval) {
+                clearInterval(termUpdateInterval);
+                termUpdateInterval = null;
+            }
+        }
+
+        async function startBuildProcess(cmdType) {
+            try {
+                openTerminalModal();
+                const screen = document.getElementById('term-screen');
+                screen.innerText = `[*] Starting terminal task: ${cmdType.toUpperCase()}...\n`;
+                
+                const res = await fetch(`${API_BASE}/api/terminal/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: jsonStringify({ cmd_type: cmdType })
+                });
+                const data = await res.json();
+                
+                if (!data.success) {
+                    screen.innerText += `[-] Error: ${data.message}\n`;
+                    return;
+                }
+
+                // Poll terminal output
+                termUpdateInterval = setInterval(updateTerminalLogs, 400);
+
+            } catch (err) {
+                document.getElementById('term-screen').innerText += `[-] Connection failed: ${err}\n`;
+            }
+        }
+
+        async function updateTerminalLogs() {
+            try {
+                const res = await fetch(`${API_BASE}/api/terminal/output`);
+                const data = await res.json();
+                const screen = document.getElementById('term-screen');
+                
+                if (data.output) {
+                    screen.innerText += data.output;
+                    screen.scrollTop = screen.scrollHeight;
+                }
+
+                const badge = document.getElementById('term-status-badge');
+                if (data.is_running) {
+                    badge.innerText = "Running";
+                    badge.className = "status-badge badge-active";
+                } else {
+                    badge.innerText = "Terminated";
+                    badge.className = "status-badge badge-inactive";
+                    clearInterval(termUpdateInterval);
+                    termUpdateInterval = null;
+                }
+            } catch (err) {
+                console.error("Terminal output fetch failed:", err);
+            }
+        }
+
+        // Send stdin to the running terminal script
+        async function sendTerminalInput() {
+            const inputEl = document.getElementById('term-input');
+            const text = inputEl.value;
+            if (!text) return;
+
+            // Echo input in green terminal
+            const screen = document.getElementById('term-screen');
+            screen.innerText += `${text}\n`;
+            screen.scrollTop = screen.scrollHeight;
+            inputEl.value = '';
+
+            try {
+                await fetch(`${API_BASE}/api/terminal/input`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: jsonStringify({ text: text + '\n' })
+                });
+            } catch (err) {
+                console.error("Terminal stdin send failed:", err);
+            }
+        }
+
+        // Custom Helper to prevent JSON stringify issues
+        function jsonStringify(obj) {
+            return JSON.stringify(obj);
+        }
+
+        // Event listener for terminal text boxes
+        document.getElementById('term-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendTerminalInput();
+            }
+        });
+
+        // Set Live Dashboard Clock
+        function startClock() {
+            const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            
+            function refreshTime() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                
+                const weekday = weekdays[now.getDay()];
+                const month = months[now.getMonth()];
+                const day = now.getDate();
+                
+                document.getElementById('dash-time').innerText = `${hours}:${minutes}`;
+                document.getElementById('dash-date').innerText = `${weekday} • ${month} ${day}`;
+            }
+            refreshTime();
+            setInterval(refreshTime, 1000);
+        }
+
+        // Fetch About page and Welcome banner identity from real system
+        async function fetchAboutInfo() {
+            try {
+                const res = await fetch(`${API_BASE}/api/about_info`);
+                const data = await res.json();
+
+                // Welcome banner
+                const user = data.user || 'user';
+                const host = data.hostname || 'localhost';
+                document.getElementById('welcome-username').innerText = user;
+                document.getElementById('welcome-meta').innerText = `Logged in as @${user} • ${host}`;
+
+                // About page cards
+                if (document.getElementById('about-distro')) {
+                    document.getElementById('about-distro').innerText = data.distro || 'Unknown';
+                }
+                if (document.getElementById('about-kernel')) {
+                    document.getElementById('about-kernel').innerText = data.kernel || 'Unknown';
+                }
+                if (document.getElementById('about-arch')) {
+                    document.getElementById('about-arch').innerText = data.arch || 'x86_64';
+                }
+                if (document.getElementById('about-desktop')) {
+                    document.getElementById('about-desktop').innerText = data.desktop || 'Unknown';
+                }
+                if (document.getElementById('about-hostname')) {
+                    document.getElementById('about-hostname').innerText = data.hostname || 'Unknown';
+                }
+            } catch (err) {
+                console.error("About info load failed:", err);
+            }
+        }
+
+        // Initialize and Setup periodic update loops
+        updateStatus();
+        fetchIOMMU();
+        fetchHardware();
+        fetchAboutInfo();
+        startClock();
+        setInterval(updateStatus, 3000);
+        // Live update log tail panel if currently viewing it
+        setInterval(() => {
+            if (currentView === 'logs') {
+                fetchLogs();
+            }
+        }, 4000);
+    </script>
+</body>
+</html>

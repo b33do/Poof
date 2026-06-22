@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# /etc/libvirt/hooks/qemu
+#
+# Dispatcher for QEMU hooks.
+# This script executes hook scripts located in /etc/libvirt/hooks/qemu.d/
+
+# The VM name is passed as the first argument
+VM_NAME="$1"
+# The operation (e.g. "prepare", "release", etc.) is the second argument
+OPERATION="$2"
+# The sub-operation (e.g. "begin", "end", etc.) is the third argument
+SUB_OPERATION="$3"
+
+# Path to the hooks directory
+HOOKS_DIR="/etc/libvirt/hooks/qemu.d"
+
+# Execute matching hook scripts
+if [ -d "${HOOKS_DIR}/${VM_NAME}/${OPERATION}/${SUB_OPERATION}" ]; then
+    for script in "${HOOKS_DIR}/${VM_NAME}/${OPERATION}/${SUB_OPERATION}"/*; do
+        if [ -x "$script" ]; then
+            "$script" "$@"
+        fi
+    done
+fi

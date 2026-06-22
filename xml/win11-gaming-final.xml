@@ -1,0 +1,240 @@
+<domain type='kvm' id='15' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
+  <name>win11-gaming</name>
+  <uuid>51559a9c-8ef8-433e-9411-b4fa2bf92370</uuid>
+  <memory unit='KiB'>4194304</memory>
+  <currentMemory unit='KiB'>4194304</currentMemory>
+  <vcpu placement='static'>12</vcpu>
+  <resource>
+    <partition>/machine</partition>
+  </resource>
+  <os>
+    <type arch='x86_64' machine='pc-q35-8.2'>hvm</type>
+    <loader readonly='yes' secure='yes' type='pflash' format='qcow2'>/usr/share/edk2/ovmf/OVMF_CODE_4M.patched.qcow2</loader>
+    <nvram format='qcow2'>/usr/share/edk2/ovmf/OVMF_VARS_4M.patched.qcow2</nvram>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <hyperv mode='custom'>
+      <relaxed state='on'/>
+      <vapic state='on'/>
+      <spinlocks state='on' retries='8191'/>
+      <vpindex state='on'/>
+      <synic state='on'/>
+      <stimer state='on'/>
+      <reset state='on'/>
+      <vendor_id state='on' value='AuthenticAMD'/>
+      <frequencies state='on'/>
+    </hyperv>
+    <kvm>
+      <hidden state='on'/>
+    </kvm>
+    <vmport state='off'/>
+    <smm state='on'/>
+    <ioapic driver='kvm'/>
+  </features>
+  <cpu mode='host-passthrough' check='none' migratable='off'>
+    <topology sockets='1' dies='1' clusters='1' cores='6' threads='2'/>
+    <cache mode='passthrough'/>
+    <feature policy='disable' name='hypervisor'/>
+    <feature policy='require' name='svm'/>
+    <feature policy='disable' name='x2apic'/>
+    <feature policy='require' name='topoext'/>
+  </cpu>
+  <clock offset='localtime'>
+    <timer name='rtc' tickpolicy='catchup'/>
+    <timer name='pit' tickpolicy='delay'/>
+    <timer name='hpet' present='yes'/>
+    <timer name='hypervclock' present='yes'/>
+    <timer name='tsc' present='yes' mode='native'/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <pm>
+    <suspend-to-mem enabled='yes'/>
+    <suspend-to-disk enabled='yes'/>
+  </pm>
+  <devices>
+    <emulator>/usr/local/bin/qemu-system-x86_64</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' cache='none' io='native' discard='unmap'/>
+      <source file='/var/lib/libvirt/images/win11-gaming.qcow2' index='3'/>
+      <backingStore/>
+      <target dev='sda' bus='sata'/>
+      <serial>S3FNX0GB418903Y</serial>
+      <alias name='sata0-0-0'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/var/lib/libvirt/images/windows.iso' index='2'/>
+      <backingStore/>
+      <target dev='sdb' bus='sata'/>
+      <readonly/>
+      <alias name='sata0-0-1'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='1'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/usr/share/virtio-win/virtio-win.iso' index='1'/>
+      <backingStore/>
+      <target dev='sdc' bus='sata'/>
+      <readonly/>
+      <alias name='sata0-0-2'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='2'/>
+    </disk>
+    <controller type='usb' index='0' model='none'/>
+    <controller type='sata' index='0'>
+      <alias name='ide'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x1f' function='0x2'/>
+    </controller>
+    <controller type='pci' index='0' model='pcie-root'>
+      <alias name='pcie.0'/>
+    </controller>
+    <controller type='pci' index='1' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='1' port='0x10'/>
+      <alias name='pci.1'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0' multifunction='on'/>
+    </controller>
+    <controller type='pci' index='2' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='2' port='0x11'/>
+      <alias name='pci.2'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x1'/>
+    </controller>
+    <controller type='pci' index='3' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='3' port='0x12'/>
+      <alias name='pci.3'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x2'/>
+    </controller>
+    <controller type='pci' index='4' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='4' port='0x13'/>
+      <alias name='pci.4'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x3'/>
+    </controller>
+    <controller type='pci' index='5' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='5' port='0x14'/>
+      <alias name='pci.5'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x4'/>
+    </controller>
+    <controller type='pci' index='6' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='6' port='0x17'/>
+      <alias name='pci.6'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x7'/>
+    </controller>
+    <controller type='pci' index='7' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='7' port='0x15'/>
+      <alias name='pci.7'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x5'/>
+    </controller>
+    <controller type='pci' index='8' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='8' port='0x16'/>
+      <alias name='pci.8'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x6'/>
+    </controller>
+    <interface type='network'>
+      <mac address='14:dd:a9:e2:b5:7c'/>
+      <source network='default' portid='1897b72f-680e-4b20-8760-be6b64f94bc4' bridge='virbr0'/>
+      <target dev='vnet14'/>
+      <model type='e1000e'/>
+      <alias name='net0'/>
+      <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+    </interface>
+    <input type='mouse' bus='ps2'>
+      <alias name='input0'/>
+    </input>
+    <input type='keyboard' bus='ps2'>
+      <alias name='input1'/>
+    </input>
+    <sound model='ich9'>
+      <alias name='sound0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x1b' function='0x0'/>
+    </sound>
+    <audio id='1' type='none'/>
+    <graphics type='spice' autoport='yes' listen='127.0.0.1'>
+      <listen type='address' address='127.0.0.1'/>
+    </graphics>
+    <video>
+      <model type='qxl' ram='65536' vram='65536' vgamem='16384' heads='1' primary='yes'/>
+      <alias name='video0'/>
+    </video>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <driver name='vfio'/>
+      <source>
+        <address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+      </source>
+      <alias name='hostdev0'/>
+      <rom file='/var/lib/libvirt/roms/patched_gpu.rom'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0' multifunction='on'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <driver name='vfio'/>
+      <source>
+        <address domain='0x0000' bus='0x01' slot='0x00' function='0x1'/>
+      </source>
+      <alias name='hostdev1'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x1'/>
+    </hostdev>
+    <watchdog model='itco' action='reset'>
+      <alias name='watchdog0'/>
+    </watchdog>
+    <memballoon model='none'/>
+    <shmem name='looking-glass'>
+      <model type='ivshmem-plain'/>
+      <size unit='M'>32</size>
+      <alias name='shmem0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x10' function='0x0'/>
+    </shmem>
+  </devices>
+  <seclabel type='dynamic' model='dac' relabel='yes'>
+    <label>+953:+953</label>
+    <imagelabel>+953:+953</imagelabel>
+  </seclabel>
+  
+
+  <qemu:commandline>
+    <!-- SMBIOS Type 0: BIOS Information -->
+    <qemu:arg value='-smbios'/>
+    <qemu:arg value='type=0,vendor=American Megatrends Inc.,version=F22,date=05/23/2026,release=5.17'/>
+
+    <!-- SMBIOS Type 1: System Information -->
+    <qemu:arg value='-smbios'/>
+    <qemu:arg value='type=1,manufacturer=ASUSTeK COMPUTER INC.,product=ROG MAXIMUS Z790 HERO,version=Rev 1.0,serial=MT7029810398201,uuid=e05b9bba-4e92-4f3f-9a11-de1a42b10ab4,sku=SKU,family=Z790'/>
+
+    <!-- SMBIOS Type 2: Baseboard Information -->
+    <qemu:arg value='-smbios'/>
+    <qemu:arg value='type=2,manufacturer=ASUSTeK COMPUTER INC.,product=ROG MAXIMUS Z790 HERO,version=Rev 1.0,serial=220601050900123,asset=Default string,location=Default string'/>
+
+    <!-- SMBIOS Type 3: Chassis Information -->
+    <qemu:arg value='-smbios'/>
+    <qemu:arg value='type=3,manufacturer=ASUSTeK COMPUTER INC.,version=Rev 1.0,serial=MT7029810398201,asset=Default string,sku=Default string'/>
+
+    <!-- SMBIOS Type 4: Processor Information -->
+    <qemu:arg value='-smbios'/>
+    <qemu:arg value='type=4,sock_pfx=LGA1700,manufacturer=Intel(R) Corporation,version=13th Gen Intel(R) Core(TM) i9-13900K'/>
+
+    <!-- SMBIOS Type 17: Memory Device -->
+    <qemu:arg value='-smbios'/>
+    <qemu:arg value='type=17,loc_pfx=DIMM_A1,bank=BANK 0,manufacturer=G.Skill,serial=00000001,asset=PartNum,part=F5-6000J3040G16G,speed=6000'/>
+
+    <!-- Spoof Laptop GPU Subsystem Vendor & Device IDs globally -->
+    <qemu:arg value='-global'/>
+    <qemu:arg value='vfio-pci.x-pci-sub-vendor-id=0x103c'/>
+    <qemu:arg value='-global'/>
+    <qemu:arg value='vfio-pci.x-pci-sub-device-id=0x87b1'/>
+
+    <!-- Load Virtual Battery SSDT ACPI Table -->
+    <qemu:arg value='-acpitable'/>
+    <qemu:arg value='file=/var/lib/libvirt/roms/ssdt.aml'/>
+  </qemu:commandline>
+</domain>
+
