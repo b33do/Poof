@@ -81,7 +81,7 @@ To ensure direct, bare-metal graphics performance, we isolate the host's seconda
 
 To monitor host resources, active VM states, dynamic display configurations, and launch deployment scripts, we created the **Celestial Toolkit**:
 
-![Celestial Dashboard](assets/dashboard.png)
+![Celestial Dashboard](assets/dashboard_real.png)
 
 * **Backend Telemetry API Server ([celestial_backend.py](dashboard/celestial_backend.py))**: A custom Python HTTP server exposing endpoints for real-time CPU utilization, active system RAM, host networking data, CPU temperature, disk usage, active VM statuses, and sub-process task logs.
 * **Responsive Frontend ([index.html](dashboard/index.html))**: A sleek, dark-themed glassmorphism console styled with vanilla CSS. It includes:
