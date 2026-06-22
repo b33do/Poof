@@ -112,5 +112,5 @@ Academic and community resources used during development:
 
 1. **Nika (Reference Base)**: Custom QEMU patch patterns, OVMF configurations, memory mapping templates, and SSDT tables.
 2. **VMAware**: Hypervisor verification checking scripts.
-3. **Looking Glass Project**: Ultra low-latency Framebuffer shared memory interface between host and guest.
+3. **Looking Glass / Steam Remote Play**: Display interface options. We initially targetted and configured the Looking Glass ivshmem interface, but transitioned to Steam Remote Play for final video streaming and client integration.
 4. **CachyOS Distribution**: Arch-linux derivate optimized with custom kernel patches (e.g. BBR, AMD-Pstate) serving as the virtualization host system.
